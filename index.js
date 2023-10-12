@@ -47,16 +47,45 @@ app.get("/",async(req,resp)=>{
     }
 })
 
-app.get('/:category', async (req, res) => {
+app.get('/:category', async (req, resp) => {
     const category = req.params.category.toLowerCase(); // Convert the category to lowercase for case-insensitive matching
   
     try {
         const foods = await food.find({ 'category': category });
-        res.json(foods);
+        resp.json(foods);
     } 
     catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        resp.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+app.get('/id/:_id', async (req, res) => {
+  const foodId = req.params._id;
+
+  try {
+    const food_item = await food.findById(foodId);
+
+    if (food_item) {
+      res.json({ food_item });
+    } else {
+      res.status(404).json({ error: 'Food item not found' });
+    }
+  } catch (error) {
+    console.log('Error in fetching food data: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/name/:name', async (req, resp) => {
+  const name = req.params.name; // Convert the category to lowercase for case-insensitive matching
+
+  try {
+      const foods = await food.find({ 'name': name });
+      resp.json(foods);
+  } 
+  catch (error) {
+      resp.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 app.post("/", async(req, resp) => {
